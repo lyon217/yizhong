@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.llaccj.yizhong.service.others.BaseDictMapper">
+  <resultMap id="BaseResultMap" type="org.llaccj.yizhong.module.BaseDict">
+    <constructor>
+      <idArg column="dict_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="dict_code_one" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="dict_type1_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="dict_code_two" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="dict_type2_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    dict_id, dict_code_one, dict_type1_name, dict_code_two, dict_type2_name
+  </sql>
+
+  <select id="getCodeTwoFromOne" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select * from base_dict where dict_code_one = #{dictCodeOne}
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select * from base_dict;
+  </select>
+
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from base_dict
+    where dict_id = #{dictId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from base_dict
+    where dict_id = #{dictId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="org.llaccj.yizhong.module.BaseDict">
+    insert into base_dict (dict_id, dict_code_one, dict_type1_name, 
+      dict_code_two, dict_type2_name)
+    values (#{dictId,jdbcType=INTEGER}, #{dictCodeOne,jdbcType=INTEGER}, #{dictType1Name,jdbcType=VARCHAR}, 
+      #{dictCodeTwo,jdbcType=INTEGER}, #{dictType2Name,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.llaccj.yizhong.module.BaseDict">
+    insert into base_dict
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dictId != null">
+        dict_id,
+      </if>
+      <if test="dictCodeOne != null">
+        dict_code_one,
+      </if>
+      <if test="dictType1Name != null">
+        dict_type1_name,
+      </if>
+      <if test="dictCodeTwo != null">
+        dict_code_two,
+      </if>
+      <if test="dictType2Name != null">
+        dict_type2_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dictId != null">
+        #{dictId,jdbcType=INTEGER},
+      </if>
+      <if test="dictCodeOne != null">
+        #{dictCodeOne,jdbcType=INTEGER},
+      </if>
+      <if test="dictType1Name != null">
+        #{dictType1Name,jdbcType=VARCHAR},
+      </if>
+      <if test="dictCodeTwo != null">
+        #{dictCodeTwo,jdbcType=INTEGER},
+      </if>
+      <if test="dictType2Name != null">
+        #{dictType2Name,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.llaccj.yizhong.module.BaseDict">
+    update base_dict
+    <set>
+      <if test="dictCodeOne != null">
+        dict_code_one = #{dictCodeOne,jdbcType=INTEGER},
+      </if>
+      <if test="dictType1Name != null">
+        dict_type1_name = #{dictType1Name,jdbcType=VARCHAR},
+      </if>
+      <if test="dictCodeTwo != null">
+        dict_code_two = #{dictCodeTwo,jdbcType=INTEGER},
+      </if>
+      <if test="dictType2Name != null">
+        dict_type2_name = #{dictType2Name,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where dict_id = #{dictId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.llaccj.yizhong.module.BaseDict">
+    update base_dict
+    set dict_code_one = #{dictCodeOne,jdbcType=INTEGER},
+      dict_type1_name = #{dictType1Name,jdbcType=VARCHAR},
+      dict_code_two = #{dictCodeTwo,jdbcType=INTEGER},
+      dict_type2_name = #{dictType2Name,jdbcType=VARCHAR}
+    where dict_id = #{dictId,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.llaccj.yizhong.service.gift.GiftLogMapper">
+  <resultMap id="BaseResultMap" type="org.llaccj.yizhong.module.GiftLog">
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="userid" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="usertel" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="useremail" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="username" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="giftid" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="giftname" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="address" javaType="java.lang.String" jdbcType="VARCHAR" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, userid, usertel, useremail, username, giftid, giftname, time, address
+  </sql>
+
+
+  <select id="getgiflog" resultMap="BaseResultMap">
+    select * from giftlog order by time desc;
+  </select>
+
+  <select id="selectUserGiftLog" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from giftlog where userid = #{id} order by time desc
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from giftlog
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from giftlog
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="org.llaccj.yizhong.module.GiftLog">
+    insert into giftlog (userid, usertel,
+      useremail, username, giftid, 
+      giftname, address
+      )
+    values (#{userid,jdbcType=INTEGER}, #{usertel,jdbcType=VARCHAR},
+      #{useremail,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{giftid,jdbcType=INTEGER}, 
+      #{giftname,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="org.llaccj.yizhong.module.GiftLog">
+    insert into giftlog
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="usertel != null">
+        usertel,
+      </if>
+      <if test="useremail != null">
+        useremail,
+      </if>
+      <if test="username != null">
+        username,
+      </if>
+      <if test="giftid != null">
+        giftid,
+      </if>
+      <if test="giftname != null">
+        giftname,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="usertel != null">
+        #{usertel,jdbcType=VARCHAR},
+      </if>
+      <if test="useremail != null">
+        #{useremail,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="giftid != null">
+        #{giftid,jdbcType=INTEGER},
+      </if>
+      <if test="giftname != null">
+        #{giftname,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.llaccj.yizhong.module.GiftLog">
+    update giftlog
+    <set>
+      <if test="userid != null">
+        userid = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="usertel != null">
+        usertel = #{usertel,jdbcType=VARCHAR},
+      </if>
+      <if test="useremail != null">
+        useremail = #{useremail,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null">
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="giftid != null">
+        giftid = #{giftid,jdbcType=INTEGER},
+      </if>
+      <if test="giftname != null">
+        giftname = #{giftname,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.llaccj.yizhong.module.GiftLog">
+    update giftlog
+    set userid = #{userid,jdbcType=INTEGER},
+      usertel = #{usertel,jdbcType=VARCHAR},
+      useremail = #{useremail,jdbcType=VARCHAR},
+      username = #{username,jdbcType=VARCHAR},
+      giftid = #{giftid,jdbcType=INTEGER},
+      giftname = #{giftname,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

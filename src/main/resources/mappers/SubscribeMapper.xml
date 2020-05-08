@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.llaccj.yizhong.service.others.SubscribeMapper">
+  <resultMap id="BaseResultMap" type="org.llaccj.yizhong.module.Subscribe">
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="subscribe_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="subscribe_userid" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="subscribe_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, subscribe_id, subscribe_userid, subscribe_time
+  </sql>
+
+  <select id="getguanzhu" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select * from subscribe where subscribe_userid = #{id}
+  </select>
+
+  <select id="getFensi" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select * from subscribe where subscribe_id = #{id}
+  </select>
+
+  <select id="getisSubscribe" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select * from subscribe where subscribe_id = #{idb} and subscribe_userid = #{ida}
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from subscribe
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from subscribe
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <delete id="deleteSubscribe" parameterType="org.llaccj.yizhong.module.Subscribe">
+    delete from subscribe
+    where subscribe_id = #{subscribeId} and subscribe_userid = #{subscribeUserid}
+  </delete>
+
+  <select id="getSubscribenum" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select count(*) from subscribe where subscribe_userid = #{id}
+  </select>
+
+  <select id="selectFensiNum" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select count(*) from subscribe where subscribe_id = #{id}
+  </select>
+
+  <insert id="insert" parameterType="org.llaccj.yizhong.module.Subscribe">
+    insert into subscribe (id, subscribe_id, subscribe_userid, 
+      subscribe_time)
+    values (#{id,jdbcType=INTEGER}, #{subscribeId,jdbcType=INTEGER}, #{subscribeUserid,jdbcType=INTEGER}, 
+      #{subscribeTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="org.llaccj.yizhong.module.Subscribe">
+    insert into subscribe
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="subscribeId != null">
+        subscribe_id,
+      </if>
+      <if test="subscribeUserid != null">
+        subscribe_userid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="subscribeId != null">
+        #{subscribeId,jdbcType=INTEGER},
+      </if>
+      <if test="subscribeUserid != null">
+        #{subscribeUserid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.llaccj.yizhong.module.Subscribe">
+    update subscribe
+    <set>
+      <if test="subscribeId != null">
+        subscribe_id = #{subscribeId,jdbcType=INTEGER},
+      </if>
+      <if test="subscribeUserid != null">
+        subscribe_userid = #{subscribeUserid,jdbcType=INTEGER},
+      </if>
+      <if test="subscribeTime != null">
+        subscribe_time = #{subscribeTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.llaccj.yizhong.module.Subscribe">
+    update subscribe
+    set subscribe_id = #{subscribeId,jdbcType=INTEGER},
+      subscribe_userid = #{subscribeUserid,jdbcType=INTEGER},
+      subscribe_time = #{subscribeTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

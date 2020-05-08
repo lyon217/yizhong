@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.llaccj.yizhong.service.admin.AdminTableMapper">
+  <resultMap id="BaseResultMap" type="org.llaccj.yizhong.module.AdminTable">
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="a_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="a_password" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="a_status" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="a_headurl" javaType="java.lang.String" jdbcType="VARCHAR" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, a_name, a_password, a_status, a_headurl
+  </sql>
+
+  <select id="AdminLogin" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select * from admintable where a_name = #{aName} and a_password =#{aPassword};
+  </select>
+  
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from admintable
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from admintable
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="org.llaccj.yizhong.module.AdminTable">
+    insert into admintable (id, a_name, a_password, a_status, a_headurl)
+    values (#{id,jdbcType=INTEGER}, #{aName,jdbcType=VARCHAR}, #{aPassword,jdbcType=VARCHAR}, 
+      #{aStatus,jdbcType=VARCHAR}), #{aHeadurl,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.llaccj.yizhong.module.AdminTable">
+    insert into admintable
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="aName != null">
+        a_name,
+      </if>
+      <if test="aPassword != null">
+        a_password,
+      </if>
+      <if test="aStatus != null">
+        a_status,
+      </if>
+      <if test="aHeadurl != null">
+        a_headurl,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="aName != null">
+        #{aName,jdbcType=VARCHAR},
+      </if>
+      <if test="aPassword != null">
+        #{aPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="aStatus != null">
+        #{aStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="aHeadurl != null">
+        #{aHeadurl,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.llaccj.yizhong.module.AdminTable">
+    update admintable
+    <set>
+      <if test="aName != null">
+        a_name = #{aName,jdbcType=VARCHAR},
+      </if>
+      <if test="aPassword != null">
+        a_password = #{aPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="aStatus != null">
+        a_status = #{aStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="aHeadurl != null">
+        a_headurl = #{aHeadurl,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.llaccj.yizhong.module.AdminTable">
+    update admintable
+    set a_name = #{aName,jdbcType=VARCHAR},
+      a_password = #{aPassword,jdbcType=VARCHAR},
+      a_status = #{aStatus,jdbcType=VARCHAR},
+      a_headurl = #{aHeadurl,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

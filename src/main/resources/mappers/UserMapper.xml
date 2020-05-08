@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.llaccj.yizhong.service.user.UserMapper">
+    <resultMap id="BaseResultMap" type="org.llaccj.yizhong.module.User">
+        <constructor>
+            <idArg column="u_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="u_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="u_password" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="u_sex" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="u_tel" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="u_headurl" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="u_email" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="u_address" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="u_profile" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="u_titlenum" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="u_ex" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="u_goldnum" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="u_create_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="u_update_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="u_isenable" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        </constructor>
+    </resultMap>
+    <resultMap id="BaseResultMapWithoutPass" type="org.llaccj.yizhong.module.User">
+        <constructor>
+            <idArg column="u_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="u_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="u_sex" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="u_tel" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="u_headurl" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="u_email" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="u_address" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="u_profile" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="u_titlenum" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="u_ex" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="u_goldnum" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="u_create_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="u_update_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="u_isenable" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        </constructor>
+    </resultMap>
+    <resultMap id="UserClickupRanks" type="org.llaccj.yizhong.module.Rankings">
+        <result property="clickup_id" column="clickup_id" jdbcType="INTEGER"/>
+        <result property="times" column="times" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    u_id, u_name, u_password, u_sex, u_tel, u_headurl, u_email, u_address, u_profile,
+    u_titlenum, u_ex, u_goldnum, u_create_time, u_update_time, u_isenable
+  </sql>
+    <sql id="Base_Column_List_Withoutpass">
+    u_id, u_name, u_sex, u_tel, u_headurl, u_email, u_address, u_profile,
+    u_titlenum, u_ex, u_goldnum, u_create_time, u_update_time, u_isenable
+  </sql>
+
+    <select id="userLogin" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select * from user where (u_tel = #{TelOrEmail} and u_password=#{password}) or(u_email = #{TelOrEmail} and u_password=#{password});
+  </select>
+
+    <select id="uIsmul" parameterType="java.lang.String" resultType="java.lang.Boolean">
+        select count(*) from user where
+
+        <trim prefixOverrides="or">
+            <if test="uName!=null">
+                u_name = #{uName}
+            </if>
+            <if test="uTel!=null">
+                or u_tel = #{uTel}
+            </if>
+            <if test="uEmail!=null">
+                or u_email= #{uEmail}
+            </if>
+        </trim>
+    </select>
+
+    <select id="selectByTelorEmail" resultMap="BaseResultMap">
+        select * from user
+        <where>
+            <if test="uTel!=null">
+                u_tel = #{uTel}
+            </if>
+            <if test="uEmail!=null">
+                u_email= #{uEmail}
+            </if>
+        </where>
+    </select>
+    <select id="selectFansByIdList" parameterType="java.util.List" resultMap="BaseResultMapWithoutPass">
+        select
+        <include refid="Base_Column_List_Withoutpass"/>
+        from user where u_id in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item.subscribeUserid}
+        </foreach>
+    </select>
+    <select id="selectSubsByIdList" parameterType="java.util.List" resultMap="BaseResultMapWithoutPass">
+        select
+        <include refid="Base_Column_List_Withoutpass"/>
+        from user where u_id in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item.subscribeId}
+        </foreach>
+    </select>
+
+    <select id="searchUserByname" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from user where u_name like concat('%',#{name},'%')
+    </select>
+
+    <select id="searchUserByid" parameterType="java.lang.Integer" resultMap="BaseResultMapWithoutPass">
+        select
+        <include refid="Base_Column_List_Withoutpass" />
+        from user where u_id = #{id}
+    </select>
+
+
+<select id="selectUserHeadurl" parameterType="java.lang.Integer" resultType="java.lang.String">
+    select u_headurl from user where u_id = #{id}
+</select>
+
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user
+        where u_id = #{uId,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectAlluser" resultMap="BaseResultMapWithoutPass">
+        select
+        <include refid="Base_Column_List_Withoutpass" />
+         from user
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user
+    where u_id = #{uId,jdbcType=INTEGER}
+  </delete>
+
+    <select id="countUserex" resultMap="UserClickupRanks">
+        SELECT u_id as clickup_id,u_ex as times FROM yizhong.user order by u_ex desc limit 20;
+    </select>
+
+    <select id="getUserByIds" parameterType="java.util.List" resultMap="BaseResultMapWithoutPass">
+        select
+        <include refid="Base_Column_List_Withoutpass" />
+        from user where u_id in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        order by field(u_id,
+        <foreach collection="list" index="index" item="item" separator="," close=")">
+            #{item}
+        </foreach>
+
+    </select>
+
+    <update id="disableUser" parameterType="java.lang.Integer">
+        update user set u_isenable = 0 where u_id  = #{id}
+    </update>
+    <update id="enableUser" parameterType="java.lang.Integer">
+        update user set u_isenable = 1 where u_id = #{id}
+    </update>
+    <select id="selectUserStatus" parameterType="java.lang.Integer">
+        select u_isenable from user where u_id = #{id}
+    </select>
+
+
+    <insert id="insert" parameterType="org.llaccj.yizhong.module.User">
+    insert into user (u_id, u_name, u_password, 
+      u_sex, u_tel, u_headurl, 
+      u_email, u_address, u_profile, 
+      u_titlenum, u_ex, u_goldnum)
+    values (#{uId,jdbcType=INTEGER}, #{uName,jdbcType=VARCHAR}, #{uPassword,jdbcType=VARCHAR}, 
+      #{uSex,jdbcType=VARCHAR}, #{uTel,jdbcType=VARCHAR}, #{uHeadurl,jdbcType=VARCHAR},
+      #{uEmail,jdbcType=VARCHAR}, #{uAddress,jdbcType=VARCHAR}, #{uProfile,jdbcType=VARCHAR}, 
+      #{uTitlenum,jdbcType=INTEGER}, #{uEx,jdbcType=INTEGER}, #{uGoldnum,jdbcType=INTEGER})
+  </insert>
+    <insert id="insertSelective" parameterType="org.llaccj.yizhong.module.User">
+        insert into user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="uName != null">
+                u_name,
+            </if>
+            <if test="uPassword != null">
+                u_password,
+            </if>
+            <if test="uSex != null">
+                u_sex,
+            </if>
+            <if test="uTel != null">
+                u_tel,
+            </if>
+            <if test="uHeadurl != null">
+                u_headurl,
+            </if>
+            <if test="uEmail != null">
+                u_email,
+            </if>
+            <if test="uAddress != null">
+                u_address,
+            </if>
+            <if test="uProfile != null">
+                u_profile,
+            </if>
+            <if test="uTitlenum != null">
+                u_titlenum,
+            </if>
+            <if test="uEx != null">
+                u_ex,
+            </if>
+            <if test="uGoldnum != null">
+                u_goldnum,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="uName != null">
+                #{uName,jdbcType=VARCHAR},
+            </if>
+            <if test="uPassword != null">
+                #{uPassword,jdbcType=VARCHAR},
+            </if>
+            <if test="uSex != null">
+                #{uSex,jdbcType=VARCHAR},
+            </if>
+            <if test="uTel != null">
+                #{uTel,jdbcType=VARCHAR},
+            </if>
+            <if test="uHeadurl != null">
+                #{uHeadurl,jdbcType=VARCHAR},
+            </if>
+            <if test="uEmail != null">
+                #{uEmail,jdbcType=VARCHAR},
+            </if>
+            <if test="uAddress != null">
+                #{uAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="uProfile != null">
+                #{uProfile,jdbcType=VARCHAR},
+            </if>
+            <if test="uTitlenum != null">
+                #{uTitlenum,jdbcType=INTEGER},
+            </if>
+            <if test="uEx != null">
+                #{uEx,jdbcType=INTEGER},
+            </if>
+            <if test="uGoldnum != null">
+                #{uGoldnum,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="org.llaccj.yizhong.module.User">
+        update user
+        <set>
+            <if test="uName != null">
+                u_name = #{uName,jdbcType=VARCHAR},
+            </if>
+            <if test="uPassword != null">
+                u_password = #{uPassword,jdbcType=VARCHAR},
+            </if>
+            <if test="uSex != null">
+                u_sex = #{uSex,jdbcType=VARCHAR},
+            </if>
+            <if test="uTel != null">
+                u_tel = #{uTel,jdbcType=VARCHAR},
+            </if>
+            <if test="uHeadurl != null">
+                u_headurl = #{uHeadurl,jdbcType=VARCHAR},
+            </if>
+            <if test="uEmail != null">
+                u_email = #{uEmail,jdbcType=VARCHAR},
+            </if>
+            <if test="uAddress != null">
+                u_address = #{uAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="uProfile != null">
+                u_profile = #{uProfile,jdbcType=VARCHAR},
+            </if>
+            <if test="uIsenable != null">
+                u_isenable = #{uIsenable,jdbcType=INTEGER},
+            </if>
+        </set>
+        where u_id = #{uId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="org.llaccj.yizhong.module.User">
+    update user
+    set u_name = #{uName,jdbcType=VARCHAR},
+      u_password = #{uPassword,jdbcType=VARCHAR},
+      u_sex = #{uSex,jdbcType=VARCHAR},
+      u_tel = #{uTel,jdbcType=VARCHAR},
+      u_headurl = #{uHeadurl,jdbcType=VARCHAR},
+      u_email = #{uEmail,jdbcType=VARCHAR},
+      u_address = #{uAddress,jdbcType=VARCHAR},
+      u_profile = #{uProfile,jdbcType=VARCHAR},
+      u_titlenum = #{uTitlenum,jdbcType=INTEGER},
+      u_ex = #{uEx,jdbcType=INTEGER},
+      u_goldnum = #{uGoldnum,jdbcType=INTEGER}
+    where u_id = #{uId,jdbcType=INTEGER}
+  </update>
+
+
+    <update id="addTitleNum_1" parameterType="java.lang.Integer">
+        update user set u_titlenum  = u_titlenum + 1 where u_id = #{id};
+    </update>
+    <update id="reduceTitleNum_1" parameterType="java.lang.Integer">
+        update user set u_titlenum  = u_titlenum - 1 where u_id = #{id};
+    </update>
+
+    <update id="addGoldNum" parameterType="java.lang.Integer">
+        update user set u_goldnum  = u_goldnum + #{num} where u_id = #{id}
+    </update>
+    <update id="addEx" parameterType="java.lang.Integer">
+        update user set u_ex = u_ex + #{num} where u_id = #{id}
+    </update>
+
+    <update id="reduceGoldNum" parameterType="java.lang.Integer">
+        update user set u_goldnum = u_goldnum - #{num} where u_id = #{id};
+    </update>
+
+    <select id="selectGoldNum" parameterType="java.lang.Integer">
+        select u_goldnum from user where u_id = #{id}
+    </select>
+
+    <delete id="deleteUser" parameterType="java.lang.Integer">
+
+    </delete>
+</mapper>

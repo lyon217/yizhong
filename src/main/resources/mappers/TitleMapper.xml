@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.llaccj.yizhong.service.title.TitleMapper">
+    <resultMap id="BaseResultMap" type="org.llaccj.yizhong.module.Title">
+        <constructor>
+            <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="titlename" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="authorid" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="authorname" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="picurl" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="posttime" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="begin_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="end_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="codeone" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="codetwo" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="likenum" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="unlikenum" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="collectnum" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="ip" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        </constructor>
+    </resultMap>
+    <resultMap id="ResultMapWithBLOBs" type="org.llaccj.yizhong.module.Title">
+        <constructor>
+            <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="titlename" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="authorid" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="authorname" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="picurl" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="posttime" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="begin_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="end_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="codeone" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="codetwo" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="likenum" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="unlikenum" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="collectnum" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="ip" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="content" javaType="java.lang.String" jdbcType="LONGVARCHAR"/>
+        </constructor>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, titlename, authorid, authorname, picurl, posttime, begin_time, end_time, codeone, 
+    codetwo, likenum, unlikenum, collectnum, ip
+  </sql>
+    <sql id="Blob_Column_List">
+    content
+  </sql>
+
+    <select id="getTitlesViauserid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from title where authorid = #{authorId}
+    </select>
+
+    <select id="getTitleListBydefault" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from title where (DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= date(posttime))
+        and begin_time is null and end_time is null
+    </select>
+    <select id="getTitleListByTime" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from title order by posttime desc;
+    </select>
+
+    <select id="getTitleListByClass" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from title where codeone = #{classone} and codetwo = #{classtwo}
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from title
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="searchTitle" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from title where titlename like concat('%',#{titlename},'%')
+    </select>
+
+    <select id="getCollectTitles" parameterType="java.util.List" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from title where id in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item.collectId}
+        </foreach>
+    </select>
+    <select id="getUsreidFromTitle" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select authorid from title where id = #{titleid}
+    </select>
+
+    <select id="getWeekBestTitle" parameterType="java.util.List" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from title where id in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item.clickup_id}
+        </foreach>
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from title
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <delete id="deleteTitle" parameterType="java.lang.Integer">
+    delete from title
+    where id = #{titleid,jdbcType=INTEGER} and authorid  = #{userid}
+  </delete>
+
+
+    <insert id="insert" parameterType="org.llaccj.yizhong.module.Title">
+    insert into title (id, titlename, authorid, 
+      authorname, picurl, posttime, 
+      begin_time, end_time, codeone, 
+      codetwo, likenum, unlikenum, 
+      collectnum, ip, content
+      )
+    values (#{id,jdbcType=INTEGER}, #{titlename,jdbcType=VARCHAR}, #{authorid,jdbcType=INTEGER}, 
+      #{authorname,jdbcType=VARCHAR}, #{picurl,jdbcType=VARCHAR}, #{posttime,jdbcType=TIMESTAMP}, 
+      #{beginTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{codeone,jdbcType=INTEGER}, 
+      #{codetwo,jdbcType=INTEGER}, #{likenum,jdbcType=INTEGER}, #{unlikenum,jdbcType=INTEGER}, 
+      #{collectnum,jdbcType=INTEGER}, #{ip,jdbcType=VARCHAR}, #{content,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="org.llaccj.yizhong.module.Title">
+        insert into title
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="titlename != null">
+                titlename,
+            </if>
+            <if test="authorid != null">
+                authorid,
+            </if>
+            <if test="authorname != null">
+                authorname,
+            </if>
+            <if test="picurl != null">
+                picurl,
+            </if>
+            <if test="beginTime != null">
+                begin_time,
+            </if>
+            <if test="endTime != null">
+                end_time,
+            </if>
+            <if test="codeone != null">
+                codeone,
+            </if>
+            <if test="codetwo != null">
+                codetwo,
+            </if>
+            <if test="likenum != null">
+                likenum,
+            </if>
+            <if test="unlikenum != null">
+                unlikenum,
+            </if>
+            <if test="collectnum != null">
+                collectnum,
+            </if>
+            <if test="ip != null">
+                ip,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="titlename != null">
+                #{titlename,jdbcType=VARCHAR},
+            </if>
+            <if test="authorid != null">
+                #{authorid,jdbcType=INTEGER},
+            </if>
+            <if test="authorname != null">
+                #{authorname,jdbcType=VARCHAR},
+            </if>
+            <if test="picurl != null">
+                #{picurl,jdbcType=VARCHAR},
+            </if>
+            <if test="beginTime != null">
+                #{beginTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="codeone != null">
+                #{codeone,jdbcType=INTEGER},
+            </if>
+            <if test="codetwo != null">
+                #{codetwo,jdbcType=INTEGER},
+            </if>
+            <if test="likenum != null">
+                #{likenum,jdbcType=INTEGER},
+            </if>
+            <if test="unlikenum != null">
+                #{unlikenum,jdbcType=INTEGER},
+            </if>
+            <if test="collectnum != null">
+                #{collectnum,jdbcType=INTEGER},
+            </if>
+            <if test="ip != null">
+                #{ip,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="org.llaccj.yizhong.module.Title">
+        update title
+        <set>
+            <if test="titlename != null">
+                titlename = #{titlename,jdbcType=VARCHAR},
+            </if>
+            <if test="authorid != null">
+                authorid = #{authorid,jdbcType=INTEGER},
+            </if>
+            <if test="authorname != null">
+                authorname = #{authorname,jdbcType=VARCHAR},
+            </if>
+            <if test="picurl != null">
+                picurl = #{picurl,jdbcType=VARCHAR},
+            </if>
+            <if test="posttime != null">
+                posttime = #{posttime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="beginTime != null">
+                begin_time = #{beginTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="codeone != null">
+                codeone = #{codeone,jdbcType=INTEGER},
+            </if>
+            <if test="codetwo != null">
+                codetwo = #{codetwo,jdbcType=INTEGER},
+            </if>
+            <if test="likenum != null">
+                likenum = #{likenum,jdbcType=INTEGER},
+            </if>
+            <if test="unlikenum != null">
+                unlikenum = #{unlikenum,jdbcType=INTEGER},
+            </if>
+            <if test="collectnum != null">
+                collectnum = #{collectnum,jdbcType=INTEGER},
+            </if>
+            <if test="ip != null">
+                ip = #{ip,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null">
+                content = #{content,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.llaccj.yizhong.module.Title">
+    update title
+    set titlename = #{titlename,jdbcType=VARCHAR},
+      authorid = #{authorid,jdbcType=INTEGER},
+      authorname = #{authorname,jdbcType=VARCHAR},
+      picurl = #{picurl,jdbcType=VARCHAR},
+      posttime = #{posttime,jdbcType=TIMESTAMP},
+      begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      codeone = #{codeone,jdbcType=INTEGER},
+      codetwo = #{codetwo,jdbcType=INTEGER},
+      likenum = #{likenum,jdbcType=INTEGER},
+      unlikenum = #{unlikenum,jdbcType=INTEGER},
+      collectnum = #{collectnum,jdbcType=INTEGER},
+      ip = #{ip,jdbcType=VARCHAR},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+    <update id="updateByPrimaryKey" parameterType="org.llaccj.yizhong.module.Title">
+    update title
+    set titlename = #{titlename,jdbcType=VARCHAR},
+      authorid = #{authorid,jdbcType=INTEGER},
+      authorname = #{authorname,jdbcType=VARCHAR},
+      picurl = #{picurl,jdbcType=VARCHAR},
+      posttime = #{posttime,jdbcType=TIMESTAMP},
+      begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      codeone = #{codeone,jdbcType=INTEGER},
+      codetwo = #{codetwo,jdbcType=INTEGER},
+      likenum = #{likenum,jdbcType=INTEGER},
+      unlikenum = #{unlikenum,jdbcType=INTEGER},
+      collectnum = #{collectnum,jdbcType=INTEGER},
+      ip = #{ip,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <update id="addLikeNum" parameterType="java.lang.Integer">
+    update title set likenum = likenum + 1 where id = #{id}
+  </update>
+    <update id="addUnLikeUnm" parameterType="java.lang.Integer">
+        update title set unlikenum = unlikenum + 1 where id = #{id}
+    </update>
+
+    <update id="addCollectNum" parameterType="java.lang.Integer">
+        update title set collectnum = collectnum + 1 where id = #{collectId}
+    </update>
+    <update id="reduceCollectNum" parameterType="java.lang.Integer">
+        update title set collectnum = collectnum - 1 where id = #{collectId}
+    </update>
+
+    <!--  <update id="updateCodeOne" parameterType="java.lang.Integer">-->
+    <!--    update title-->
+    <!--    set codeone = #{codeone} where codeone = -->
+    <!--  </update>-->
+
+
+</mapper>

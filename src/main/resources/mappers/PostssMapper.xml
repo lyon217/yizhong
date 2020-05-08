@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.llaccj.yizhong.service.PostssMapper">
+  <resultMap id="BaseResultMap" type="org.llaccj.yizhong.module.Postss">
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="title" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="price" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="class_one" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="class_two" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="class_three" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="picture_url" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="releae_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="author" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="begin_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="end_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="worthy_num" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="unworthy_num" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="collect_num" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="buy_url" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="discounts_url" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="ip" javaType="java.lang.String" jdbcType="VARCHAR" />
+    </constructor>
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="org.llaccj.yizhong.module.Postss">
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="title" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="price" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="class_one" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="class_two" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="class_three" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="picture_url" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="releae_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="author" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="begin_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="end_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="worthy_num" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="unworthy_num" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="collect_num" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="buy_url" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="discounts_url" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="ip" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="content" javaType="java.lang.String" jdbcType="LONGVARCHAR" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, title, price, class_one, class_two, class_three, picture_url, releae_time, author, 
+    begin_time, end_time, worthy_num, unworthy_num, collect_num, buy_url, discounts_url, 
+    ip
+  </sql>
+  <sql id="Blob_Column_List">
+    content
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from posts
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from posts
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="org.llaccj.yizhong.module.Postss">
+    insert into posts (id, title, price, 
+      class_one, class_two, class_three, 
+      picture_url, releae_time, author, 
+      begin_time, end_time, worthy_num, 
+      unworthy_num, collect_num, buy_url, 
+      discounts_url, ip, content
+      )
+    values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{price,jdbcType=VARCHAR}, 
+      #{classOne,jdbcType=VARCHAR}, #{classTwo,jdbcType=VARCHAR}, #{classThree,jdbcType=VARCHAR}, 
+      #{pictureUrl,jdbcType=VARCHAR}, #{releaeTime,jdbcType=TIMESTAMP}, #{author,jdbcType=VARCHAR}, 
+      #{beginTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{worthyNum,jdbcType=INTEGER}, 
+      #{unworthyNum,jdbcType=INTEGER}, #{collectNum,jdbcType=INTEGER}, #{buyUrl,jdbcType=VARCHAR}, 
+      #{discountsUrl,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, #{content,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="org.llaccj.yizhong.module.Postss">
+    insert into posts
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+      <if test="classOne != null">
+        class_one,
+      </if>
+      <if test="classTwo != null">
+        class_two,
+      </if>
+      <if test="classThree != null">
+        class_three,
+      </if>
+      <if test="pictureUrl != null">
+        picture_url,
+      </if>
+      <if test="releaeTime != null">
+        releae_time,
+      </if>
+      <if test="author != null">
+        author,
+      </if>
+      <if test="beginTime != null">
+        begin_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="worthyNum != null">
+        worthy_num,
+      </if>
+      <if test="unworthyNum != null">
+        unworthy_num,
+      </if>
+      <if test="collectNum != null">
+        collect_num,
+      </if>
+      <if test="buyUrl != null">
+        buy_url,
+      </if>
+      <if test="discountsUrl != null">
+        discounts_url,
+      </if>
+      <if test="ip != null">
+        ip,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=VARCHAR},
+      </if>
+      <if test="classOne != null">
+        #{classOne,jdbcType=VARCHAR},
+      </if>
+      <if test="classTwo != null">
+        #{classTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="classThree != null">
+        #{classThree,jdbcType=VARCHAR},
+      </if>
+      <if test="pictureUrl != null">
+        #{pictureUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="releaeTime != null">
+        #{releaeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="author != null">
+        #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="beginTime != null">
+        #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="worthyNum != null">
+        #{worthyNum,jdbcType=INTEGER},
+      </if>
+      <if test="unworthyNum != null">
+        #{unworthyNum,jdbcType=INTEGER},
+      </if>
+      <if test="collectNum != null">
+        #{collectNum,jdbcType=INTEGER},
+      </if>
+      <if test="buyUrl != null">
+        #{buyUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="discountsUrl != null">
+        #{discountsUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null">
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.llaccj.yizhong.module.Postss">
+    update posts
+    <set>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=VARCHAR},
+      </if>
+      <if test="classOne != null">
+        class_one = #{classOne,jdbcType=VARCHAR},
+      </if>
+      <if test="classTwo != null">
+        class_two = #{classTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="classThree != null">
+        class_three = #{classThree,jdbcType=VARCHAR},
+      </if>
+      <if test="pictureUrl != null">
+        picture_url = #{pictureUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="releaeTime != null">
+        releae_time = #{releaeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="author != null">
+        author = #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="beginTime != null">
+        begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="worthyNum != null">
+        worthy_num = #{worthyNum,jdbcType=INTEGER},
+      </if>
+      <if test="unworthyNum != null">
+        unworthy_num = #{unworthyNum,jdbcType=INTEGER},
+      </if>
+      <if test="collectNum != null">
+        collect_num = #{collectNum,jdbcType=INTEGER},
+      </if>
+      <if test="buyUrl != null">
+        buy_url = #{buyUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="discountsUrl != null">
+        discounts_url = #{discountsUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null">
+        ip = #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.llaccj.yizhong.module.Postss">
+    update posts
+    set title = #{title,jdbcType=VARCHAR},
+      price = #{price,jdbcType=VARCHAR},
+      class_one = #{classOne,jdbcType=VARCHAR},
+      class_two = #{classTwo,jdbcType=VARCHAR},
+      class_three = #{classThree,jdbcType=VARCHAR},
+      picture_url = #{pictureUrl,jdbcType=VARCHAR},
+      releae_time = #{releaeTime,jdbcType=TIMESTAMP},
+      author = #{author,jdbcType=VARCHAR},
+      begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      worthy_num = #{worthyNum,jdbcType=INTEGER},
+      unworthy_num = #{unworthyNum,jdbcType=INTEGER},
+      collect_num = #{collectNum,jdbcType=INTEGER},
+      buy_url = #{buyUrl,jdbcType=VARCHAR},
+      discounts_url = #{discountsUrl,jdbcType=VARCHAR},
+      ip = #{ip,jdbcType=VARCHAR},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.llaccj.yizhong.module.Postss">
+    update posts
+    set title = #{title,jdbcType=VARCHAR},
+      price = #{price,jdbcType=VARCHAR},
+      class_one = #{classOne,jdbcType=VARCHAR},
+      class_two = #{classTwo,jdbcType=VARCHAR},
+      class_three = #{classThree,jdbcType=VARCHAR},
+      picture_url = #{pictureUrl,jdbcType=VARCHAR},
+      releae_time = #{releaeTime,jdbcType=TIMESTAMP},
+      author = #{author,jdbcType=VARCHAR},
+      begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      worthy_num = #{worthyNum,jdbcType=INTEGER},
+      unworthy_num = #{unworthyNum,jdbcType=INTEGER},
+      collect_num = #{collectNum,jdbcType=INTEGER},
+      buy_url = #{buyUrl,jdbcType=VARCHAR},
+      discounts_url = #{discountsUrl,jdbcType=VARCHAR},
+      ip = #{ip,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

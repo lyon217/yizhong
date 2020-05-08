@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.llaccj.yizhong.service.title.ClickupMapper">
+    <resultMap id="BaseResultMap" type="org.llaccj.yizhong.module.Clickup">
+        <constructor>
+            <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="clickup_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="clickup_to_userid" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="clickup_to_username" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="clickup_from_userid" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="clickup_from_username" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="clickup_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="clickup_type" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        </constructor>
+    </resultMap>
+    <resultMap id="TitleClickupRanks" type="org.llaccj.yizhong.module.Rankings">
+        <result property="clickup_id" column="clickup_id" jdbcType="INTEGER"/>
+        <result property="times" column="times" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, clickup_id, clickup_to_userid, clickup_to_username, clickup_from_userid, clickup_from_username, 
+    clickup_time, clickup_type
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from clickup
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="isClickUp" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from clickup
+        where clickup_id = #{id} and clickup_from_userid = #{userid} and clickup_type = #{type}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from clickup
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="org.llaccj.yizhong.module.Clickup">
+    insert into clickup (clickup_id, clickup_to_userid,
+      clickup_to_username, clickup_from_userid, clickup_from_username, 
+      clickup_time, clickup_type)
+    values (#{clickupId,jdbcType=INTEGER}, #{clickupToUserid,jdbcType=INTEGER},
+      #{clickupToUsername,jdbcType=VARCHAR}, #{clickupFromUserid,jdbcType=INTEGER}, #{clickupFromUsername,jdbcType=VARCHAR}, 
+      #{clickupTime,jdbcType=TIMESTAMP}, #{clickupType,jdbcType=INTEGER})
+  </insert>
+    <insert id="insertSelective" parameterType="org.llaccj.yizhong.module.Clickup">
+        insert into clickup
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="clickupId != null">
+                clickup_id,
+            </if>
+            <if test="clickupToUserid != null">
+                clickup_to_userid,
+            </if>
+            <if test="clickupToUsername != null">
+                clickup_to_username,
+            </if>
+            <if test="clickupFromUserid != null">
+                clickup_from_userid,
+            </if>
+            <if test="clickupFromUsername != null">
+                clickup_from_username,
+            </if>
+            <if test="clickupType != null">
+                clickup_type,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="clickupId != null">
+                #{clickupId,jdbcType=INTEGER},
+            </if>
+            <if test="clickupToUserid != null">
+                #{clickupToUserid,jdbcType=INTEGER},
+            </if>
+            <if test="clickupToUsername != null">
+                #{clickupToUsername,jdbcType=VARCHAR},
+            </if>
+            <if test="clickupFromUserid != null">
+                #{clickupFromUserid,jdbcType=INTEGER},
+            </if>
+            <if test="clickupFromUsername != null">
+                #{clickupFromUsername,jdbcType=VARCHAR},
+            </if>
+            <if test="clickupType != null">
+                #{clickupType,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="org.llaccj.yizhong.module.Clickup">
+        update clickup
+        <set>
+            <if test="clickupId != null">
+                clickup_id = #{clickupId,jdbcType=INTEGER},
+            </if>
+            <if test="clickupToUserid != null">
+                clickup_to_userid = #{clickupToUserid,jdbcType=INTEGER},
+            </if>
+            <if test="clickupToUsername != null">
+                clickup_to_username = #{clickupToUsername,jdbcType=VARCHAR},
+            </if>
+            <if test="clickupFromUserid != null">
+                clickup_from_userid = #{clickupFromUserid,jdbcType=INTEGER},
+            </if>
+            <if test="clickupFromUsername != null">
+                clickup_from_username = #{clickupFromUsername,jdbcType=VARCHAR},
+            </if>
+            <if test="clickupType != null">
+                clickup_type = #{clickupType,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="org.llaccj.yizhong.module.Clickup">
+    update clickup
+    set clickup_id = #{clickupId,jdbcType=INTEGER},
+      clickup_to_userid = #{clickupToUserid,jdbcType=INTEGER},
+      clickup_to_username = #{clickupToUsername,jdbcType=VARCHAR},
+      clickup_from_userid = #{clickupFromUserid,jdbcType=INTEGER},
+      clickup_from_username = #{clickupFromUsername,jdbcType=VARCHAR},
+      clickup_type = #{clickupType,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <select id="CountTitleClickupWeekly" resultMap="TitleClickupRanks">
+        SELECT clickup_id,count(clickup_id) as times
+        FROM yizhong.clickup
+        where clickup_type = 0 and DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= date(clickup_time)
+        group by clickup_id
+        order by count(clickup_id) desc, clickup_time desc
+        limit 20;
+  </select>
+
+</mapper>

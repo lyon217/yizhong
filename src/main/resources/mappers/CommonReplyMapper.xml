@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.llaccj.yizhong.service.common.CommonReplyMapper">
+  <resultMap id="BaseResultMap" type="org.llaccj.yizhong.module.CommonReply">
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="replycommonid" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="replycontent" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="reply_from_userid" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="reply_from_username" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="reply_to_userid" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="reply_to_username" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="reply_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="reply_likenum" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, replycommonid, replycontent, reply_from_userid, reply_from_username, reply_to_userid, 
+    reply_to_username, reply_time, reply_likenum
+  </sql>
+
+
+  <select id="getCommonReyly" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from commonreply
+    where replycommonid = #{replycommonid,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from commonreply
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <update id="addlikenum" parameterType="java.lang.Integer">
+    update commonreply
+    set reply_likenum = reply_likenum + 1 where id = #{id,jdbcType=INTEGER}
+  </update>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from commonreply
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <delete id="deleteCommon" parameterType="java.lang.Integer">
+    delete from commonreply
+    where replycommonid = #{id}
+  </delete>
+
+  <insert id="insert" parameterType="org.llaccj.yizhong.module.CommonReply">
+    insert into commonreply (id, replycommonid, replycontent, 
+      reply_from_userid, reply_from_username, reply_to_userid, 
+      reply_to_username, reply_time, reply_likenum)
+    values (#{id,jdbcType=INTEGER}, #{replycommonid,jdbcType=INTEGER}, #{replycontent,jdbcType=VARCHAR}, 
+      #{replyFromUserid,jdbcType=INTEGER}, #{replyFromUsername,jdbcType=VARCHAR}, #{replyToUserid,jdbcType=INTEGER}, 
+      #{replyToUsername,jdbcType=VARCHAR}, #{replyTime,jdbcType=TIMESTAMP}, #{reply_likenum,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="org.llaccj.yizhong.module.CommonReply">
+    insert into commonreply
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="replycommonid != null">
+        replycommonid,
+      </if>
+      <if test="replycontent != null">
+        replycontent,
+      </if>
+      <if test="replyFromUserid != null">
+        reply_from_userid,
+      </if>
+      <if test="replyFromUsername != null">
+        reply_from_username,
+      </if>
+      <if test="replyToUserid != null">
+        reply_to_userid,
+      </if>
+      <if test="replyToUsername != null">
+        reply_to_username,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="replycommonid != null">
+        #{replycommonid,jdbcType=INTEGER},
+      </if>
+      <if test="replycontent != null">
+        #{replycontent,jdbcType=VARCHAR},
+      </if>
+      <if test="replyFromUserid != null">
+        #{replyFromUserid,jdbcType=INTEGER},
+      </if>
+      <if test="replyFromUsername != null">
+        #{replyFromUsername,jdbcType=VARCHAR},
+      </if>
+      <if test="replyToUserid != null">
+        #{replyToUserid,jdbcType=INTEGER},
+      </if>
+      <if test="replyToUsername != null">
+        #{replyToUsername,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.llaccj.yizhong.module.CommonReply">
+    update commonreply
+    <set>
+      <if test="replycommonid != null">
+        replycommonid = #{replycommonid,jdbcType=INTEGER},
+      </if>
+      <if test="replycontent != null">
+        replycontent = #{replycontent,jdbcType=VARCHAR},
+      </if>
+      <if test="replyFromUserid != null">
+        reply_from_userid = #{replyFromUserid,jdbcType=INTEGER},
+      </if>
+      <if test="replyFromUsername != null">
+        reply_from_username = #{replyFromUsername,jdbcType=VARCHAR},
+      </if>
+      <if test="replyToUserid != null">
+        reply_to_userid = #{replyToUserid,jdbcType=INTEGER},
+      </if>
+      <if test="replyToUsername != null">
+        reply_to_username = #{replyToUsername,jdbcType=VARCHAR},
+      </if>
+      <if test="replyTime != null">
+        reply_time = #{replyTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.llaccj.yizhong.module.CommonReply">
+    update commonreply
+    set replycommonid = #{replycommonid,jdbcType=INTEGER},
+      replycontent = #{replycontent,jdbcType=VARCHAR},
+      reply_from_userid = #{replyFromUserid,jdbcType=INTEGER},
+      reply_from_username = #{replyFromUsername,jdbcType=VARCHAR},
+      reply_to_userid = #{replyToUserid,jdbcType=INTEGER},
+      reply_to_username = #{replyToUsername,jdbcType=VARCHAR},
+      reply_time = #{replyTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

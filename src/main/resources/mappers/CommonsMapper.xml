@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.llaccj.yizhong.service.common.CommonsMapper">
+    <resultMap id="BaseResultMap" type="org.llaccj.yizhong.module.Commons">
+        <constructor>
+            <idArg column="c_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="c_of_titleid" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="c_of_titlename" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="c_from_userid" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="c_from_username" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="c_content" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="c_likenum" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="c_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+        </constructor>
+    </resultMap>
+    <sql id="Base_Column_List">
+    c_id, c_of_titleid, c_of_titlename, c_from_userid, c_from_username, c_content, c_likenum, 
+    c_time
+  </sql>
+
+    <select id="getcommons" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from commons
+        where c_of_titleid = #{cOfTitleid,jdbcType=INTEGER}
+        order by c_time desc
+    </select>
+
+    <update id="addlikenum" parameterType="java.lang.Integer">
+    update commons
+    set c_likenum = c_likenum + 1 where c_id = #{cId,jdbcType=INTEGER}
+  </update>
+
+    <select id="selectPersonalCommons" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+         <include refid="Base_Column_List" />
+         from commons where c_from_userid = #{id} order by c_time desc
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from commons
+        where c_id = #{cId,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from commons
+    where c_id = #{cId,jdbcType=INTEGER}
+  </delete>
+
+    <delete id="deleteCommonBydeleteTitle" parameterType="java.lang.Integer">
+    delete from commons
+    where c_of_titleid = #{titleId}
+  </delete>
+
+
+    <insert id="insert" parameterType="org.llaccj.yizhong.module.Commons">
+    insert into commons (c_id, c_of_titleid, c_of_titlename, 
+      c_from_userid, c_from_username, c_content, 
+      c_likenum, c_time)
+    values (#{cId,jdbcType=INTEGER}, #{cOfTitleid,jdbcType=INTEGER}, #{cOfTitlename,jdbcType=VARCHAR}, 
+      #{cFromUserid,jdbcType=INTEGER}, #{cFromUsername,jdbcType=VARCHAR}, #{cContent,jdbcType=VARCHAR}, 
+      #{cLikenum,jdbcType=INTEGER}, #{cTime,jdbcType=TIMESTAMP})
+  </insert>
+    <insert id="insertSelective" parameterType="org.llaccj.yizhong.module.Commons">
+        insert into commons
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cOfTitleid != null">
+                c_of_titleid,
+            </if>
+            <if test="cOfTitlename != null">
+                c_of_titlename,
+            </if>
+            <if test="cFromUserid != null">
+                c_from_userid,
+            </if>
+            <if test="cFromUsername != null">
+                c_from_username,
+            </if>
+            <if test="cContent != null">
+                c_content,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cOfTitleid != null">
+                #{cOfTitleid,jdbcType=INTEGER},
+            </if>
+            <if test="cOfTitlename != null">
+                #{cOfTitlename,jdbcType=VARCHAR},
+            </if>
+            <if test="cFromUserid != null">
+                #{cFromUserid,jdbcType=INTEGER},
+            </if>
+            <if test="cFromUsername != null">
+                #{cFromUsername,jdbcType=VARCHAR},
+            </if>
+            <if test="cContent != null">
+                #{cContent,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="org.llaccj.yizhong.module.Commons">
+        update commons
+        <set>
+            <if test="cOfTitleid != null">
+                c_of_titleid = #{cOfTitleid,jdbcType=INTEGER},
+            </if>
+            <if test="cOfTitlename != null">
+                c_of_titlename = #{cOfTitlename,jdbcType=VARCHAR},
+            </if>
+            <if test="cFromUserid != null">
+                c_from_userid = #{cFromUserid,jdbcType=INTEGER},
+            </if>
+            <if test="cFromUsername != null">
+                c_from_username = #{cFromUsername,jdbcType=VARCHAR},
+            </if>
+            <if test="cContent != null">
+                c_content = #{cContent,jdbcType=VARCHAR},
+            </if>
+            <if test="cLikenum != null">
+                c_likenum = #{cLikenum,jdbcType=INTEGER},
+            </if>
+            <if test="cTime != null">
+                c_time = #{cTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where c_id = #{cId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="org.llaccj.yizhong.module.Commons">
+    update commons
+    set c_of_titleid = #{cOfTitleid,jdbcType=INTEGER},
+      c_of_titlename = #{cOfTitlename,jdbcType=VARCHAR},
+      c_from_userid = #{cFromUserid,jdbcType=INTEGER},
+      c_from_username = #{cFromUsername,jdbcType=VARCHAR},
+      c_content = #{cContent,jdbcType=VARCHAR},
+      c_likenum = #{cLikenum,jdbcType=INTEGER},
+      c_time = #{cTime,jdbcType=TIMESTAMP}
+    where c_id = #{cId,jdbcType=INTEGER}
+  </update>
+</mapper>
